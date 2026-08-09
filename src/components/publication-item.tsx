@@ -1,4 +1,5 @@
 import { doiUrl, type Publication } from "@/lib/data/publications";
+import { CopyCitationButton } from "@/components/copy-citation-button";
 
 function formatAuthors(authors: string) {
   return authors
@@ -62,6 +63,8 @@ export function PublicationItem({ pub }: { pub: Publication }) {
             <span className="text-gold">Open Access</span>
           </>
         )}
+        <span aria-hidden>·</span>
+        <CopyCitationButton pub={pub} />
       </div>
     </li>
   );

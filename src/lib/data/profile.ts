@@ -60,6 +60,7 @@ export interface Book {
   year?: string;
   description?: string;
   link?: string;
+  cover?: string;
 }
 
 export const books: Book[] = [
@@ -72,6 +73,7 @@ export const books: Book[] = [
     description:
       "An edited volume examining how generative AI techniques are applied to remote sensing of the environment, spanning algorithms, tools, and real-world applications. Neha Bhati co-authored the volume and contributed the chapter \"Tools and Software: Essential Resources for AI Integration.\"",
     link: "https://www.routledge.com/Generative-AI-for-Remote-Sensing-of-the-Environment-Algorithms-and-Applications/Sood-Srivastav-Kaur-Bhati/p/book/9781041017448",
+    cover: "/images/book-generative-ai-remote-sensing.jpg",
   },
   {
     status: "forthcoming",

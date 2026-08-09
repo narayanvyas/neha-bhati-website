@@ -1,7 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Monogram } from "@/components/monogram";
 import { SectionHeading } from "@/components/section-heading";
 import { PublicationItem } from "@/components/publication-item";
+import { Reveal } from "@/components/reveal";
+import { AnimatedStat } from "@/components/animated-stat";
 import { profile, researchAreas, scholarMetrics, books } from "@/lib/data/profile";
 import { publications, totalPublications } from "@/lib/data/publications";
 
@@ -57,18 +60,13 @@ export default function Home() {
       <section className="border-y border-border bg-surface">
         <div className="mx-auto grid max-w-5xl grid-cols-2 px-6 py-10 sm:grid-cols-4">
           {[
-            { label: "Publications", value: `${totalPublications}+` },
-            { label: "Citations", value: `${scholarMetrics.citations}+`, hint: scholarMetrics.source },
-            { label: "h-index", value: `${scholarMetrics.hIndex}`, hint: scholarMetrics.source },
-            { label: "Books", value: `${books.length}` },
+            { label: "Publications", value: totalPublications, suffix: "+" },
+            { label: "Citations", value: scholarMetrics.citations, suffix: "+", hint: scholarMetrics.source },
+            { label: "h-index", value: scholarMetrics.hIndex, hint: scholarMetrics.source },
+            { label: "Books", value: books.length },
           ].map((s, i) => (
-            <div
-              key={s.label}
-              className={`px-4 py-2 text-center sm:text-left ${i > 0 ? "border-l border-border/70" : ""}`}
-            >
-              <p className="font-serif-display text-4xl text-accent">{s.value}</p>
-              <p className="mt-1 text-sm text-foreground">{s.label}</p>
-              {s.hint && <p className="text-xs text-muted">{s.hint}</p>}
+            <div key={s.label} className={`px-4 py-2 text-center sm:text-left ${i > 0 ? "border-l border-border/70" : ""}`}>
+              <AnimatedStat value={s.value} suffix={s.suffix} label={s.label} hint={s.hint} />
             </div>
           ))}
         </div>
@@ -76,20 +74,21 @@ export default function Home() {
 
       {/* Research areas */}
       <section className="mx-auto max-w-5xl px-6 py-20">
-        <SectionHeading
-          eyebrow="Focus"
-          title="Research Areas"
-          description="Interdisciplinary work spanning intelligent systems and their real-world applications."
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="Focus"
+            title="Research Areas"
+            description="Interdisciplinary work spanning intelligent systems and their real-world applications."
+          />
+        </Reveal>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {researchAreas.map((area) => (
-            <div
-              key={area.title}
-              className="shadow-card hover:shadow-card-hover rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-accent/40"
-            >
-              <h3 className="font-serif-display text-lg text-foreground">{area.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{area.description}</p>
-            </div>
+          {researchAreas.map((area, i) => (
+            <Reveal key={area.title} delay={i * 60}>
+              <div className="shadow-card hover:shadow-card-hover h-full rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-accent/40">
+                <h3 className="font-serif-display text-lg text-foreground">{area.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{area.description}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -97,47 +96,73 @@ export default function Home() {
       {/* Featured publications */}
       <section className="border-t border-border bg-surface">
         <div className="mx-auto max-w-5xl px-6 py-20">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading eyebrow="Selected Work" title="Featured Publications" />
-            <Link href="/publications" className="text-sm text-accent hover:underline">
-              View all {totalPublications} publications &rarr;
-            </Link>
-          </div>
-          <div className="shadow-card mt-8 rounded-2xl border border-border bg-card px-6">
-            <ul>
-              {featured.map((pub) => (
-                <PublicationItem key={pub.doi} pub={pub} />
-              ))}
-            </ul>
-          </div>
+          <Reveal>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <SectionHeading eyebrow="Selected Work" title="Featured Publications" />
+              <Link href="/publications" className="text-sm text-accent hover:underline">
+                View all {totalPublications} publications &rarr;
+              </Link>
+            </div>
+          </Reveal>
+          <Reveal delay={100}>
+            <div className="shadow-card mt-8 rounded-2xl border border-border bg-card px-6">
+              <ul>
+                {featured.map((pub) => (
+                  <PublicationItem key={pub.doi} pub={pub} />
+                ))}
+              </ul>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Books teaser */}
       <section className="mx-auto max-w-5xl px-6 py-20">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <SectionHeading eyebrow="Authorship" title="Books" />
-          <Link href="/books" className="text-sm text-accent hover:underline">
-            View all books &rarr;
-          </Link>
-        </div>
-        {publishedBook && (
-          <div className="shadow-card mt-8 rounded-2xl border border-border bg-card p-8">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
-              Published &middot; {publishedBook.year}
-            </p>
-            <h3 className="mt-2 font-serif-display text-2xl text-foreground">{publishedBook.title}</h3>
-            <p className="mt-2 text-sm text-muted">{publishedBook.role}</p>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{publishedBook.description}</p>
-            <a
-              href={publishedBook.link}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 inline-block text-sm text-accent hover:underline"
-            >
-              View on Routledge &rarr;
-            </a>
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <SectionHeading eyebrow="Authorship" title="Books" />
+            <Link href="/books" className="text-sm text-accent hover:underline">
+              View all books &rarr;
+            </Link>
           </div>
+        </Reveal>
+        {publishedBook && (
+          <Reveal delay={100}>
+            <div className="shadow-card hover:shadow-card-hover mt-8 flex flex-col gap-6 rounded-2xl border border-border bg-card p-8 transition-all hover:-translate-y-1 sm:flex-row">
+              {publishedBook.cover && (
+                <a
+                  href={publishedBook.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="shrink-0 self-start overflow-hidden rounded-lg shadow-card transition-transform hover:scale-[1.03]"
+                >
+                  <Image
+                    src={publishedBook.cover}
+                    alt={`Cover of ${publishedBook.title}`}
+                    width={140}
+                    height={210}
+                    className="h-auto w-[140px]"
+                  />
+                </a>
+              )}
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+                  Published &middot; {publishedBook.year}
+                </p>
+                <h3 className="mt-2 font-serif-display text-2xl text-foreground">{publishedBook.title}</h3>
+                <p className="mt-2 text-sm text-muted">{publishedBook.role}</p>
+                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{publishedBook.description}</p>
+                <a
+                  href={publishedBook.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-block text-sm text-accent hover:underline"
+                >
+                  View on Routledge &rarr;
+                </a>
+              </div>
+            </div>
+          </Reveal>
         )}
         <p className="mt-6 text-sm text-muted">
           Two additional books are currently under production.{" "}

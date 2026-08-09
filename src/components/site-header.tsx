@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { profile } from "@/lib/data/profile";
 
 const navLinks = [
@@ -13,9 +14,24 @@ const navLinks = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 8);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur">
+    <header
+      className={`sticky top-0 z-50 border-b bg-background/85 backdrop-blur transition-shadow ${
+        scrolled ? "shadow-card border-border" : "border-border/80"
+      }`}
+    >
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
         <Link
           href="/"
@@ -26,15 +42,25 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-muted transition-colors hover:text-accent"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`relative py-1 transition-colors ${
+                  isActive ? "text-accent" : "text-muted hover:text-accent"
+                }`}
+              >
+                {link.label}
+                <span
+                  className={`absolute -bottom-[1px] left-0 h-px w-full bg-accent transition-transform duration-300 ${
+                    isActive ? "scale-x-100" : "scale-x-0"
+                  }`}
+                />
+              </Link>
+            );
+          })}
           <a
             href={profile.links.googleScholar}
             target="_blank"
@@ -71,7 +97,9 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-md px-2 py-2 text-sm text-muted hover:bg-surface hover:text-accent"
+              className={`rounded-md px-2 py-2 text-sm hover:bg-surface hover:text-accent ${
+                pathname === link.href ? "text-accent" : "text-muted"
+              }`}
               onClick={() => setOpen(false)}
             >
               {link.label}
