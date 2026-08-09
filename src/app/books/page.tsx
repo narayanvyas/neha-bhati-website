@@ -3,6 +3,7 @@ import Image from "next/image";
 import { SectionHeading } from "@/components/section-heading";
 import { Reveal } from "@/components/reveal";
 import { books } from "@/lib/data/profile";
+import { palette } from "@/lib/palette";
 
 export const metadata: Metadata = {
   title: "Books — Neha Bhati",
@@ -29,6 +30,7 @@ export default function BooksPage() {
                   ? "shadow-card hover:shadow-card-hover border-border bg-card hover:-translate-y-1"
                   : "border-dashed border-border/80"
               }`}
+              style={book.status === "published" ? { borderTopColor: palette.forest, borderTopWidth: 3 } : undefined}
             >
               {book.cover ? (
                 <a

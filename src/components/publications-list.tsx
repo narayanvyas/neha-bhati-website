@@ -20,14 +20,6 @@ export function PublicationsList({ publications }: { publications: Publication[]
     [active, publications]
   );
 
-  const byYear = useMemo(() => {
-    const map = new Map<number, Publication[]>();
-    for (const pub of filtered) {
-      map.set(pub.year, [...(map.get(pub.year) ?? []), pub]);
-    }
-    return [...map.entries()].sort((a, b) => b[0] - a[0]);
-  }, [filtered]);
-
   return (
     <div>
       <div className="flex flex-wrap gap-2">
@@ -47,19 +39,14 @@ export function PublicationsList({ publications }: { publications: Publication[]
         ))}
       </div>
 
-      <div className="mt-10 space-y-12">
-        {byYear.map(([year, pubs]) => (
-          <div key={year}>
-            <h2 className="font-serif-display text-2xl text-foreground">{year}</h2>
-            <ul className="mt-4">
-              {pubs.map((pub) => (
-                <PublicationItem key={pub.doi} pub={pub} />
-              ))}
-            </ul>
-          </div>
-        ))}
-        {byYear.length === 0 && (
-          <p className="text-muted">No publications in this category yet.</p>
+      <div className="shadow-card mt-8 rounded-2xl border border-border bg-card px-6">
+        <ul>
+          {filtered.map((pub) => (
+            <PublicationItem key={pub.doi} pub={pub} />
+          ))}
+        </ul>
+        {filtered.length === 0 && (
+          <p className="py-8 text-muted">No publications in this category yet.</p>
         )}
       </div>
     </div>

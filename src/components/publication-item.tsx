@@ -1,5 +1,6 @@
 import { doiUrl, type Publication } from "@/lib/data/publications";
 import { CopyCitationButton } from "@/components/copy-citation-button";
+import { palette, hexToRgba } from "@/lib/palette";
 
 function formatAuthors(authors: string) {
   return authors
@@ -8,6 +9,13 @@ function formatAuthors(authors: string) {
     .map((a) => (a === "Bhati N." ? `**${a}**` : a))
     .join(", ");
 }
+
+const typeColor: Record<Publication["documentType"], string> = {
+  Article: palette.indigo,
+  "Book chapter": palette.teal,
+  "Conference paper": palette.terracotta,
+  Book: palette.plum,
+};
 
 export function PublicationItem({ pub }: { pub: Publication }) {
   const authorParts = formatAuthors(pub.authors).split(/(\*\*.*?\*\*)/g);
@@ -26,7 +34,10 @@ export function PublicationItem({ pub }: { pub: Publication }) {
         >
           {pub.title}
         </a>
-        <span className="shrink-0 rounded-full border border-border px-2.5 py-0.5 text-xs text-muted">
+        <span
+          className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium"
+          style={{ background: hexToRgba(typeColor[pub.documentType], 0.12), color: typeColor[pub.documentType] }}
+        >
           {pub.documentType}
         </span>
       </div>

@@ -7,8 +7,9 @@ import { Reveal } from "@/components/reveal";
 import { AnimatedStat } from "@/components/animated-stat";
 import { profile, researchAreas, scholarMetrics, books } from "@/lib/data/profile";
 import { publications, totalPublications } from "@/lib/data/publications";
+import { palette, hexToRgba, type PaletteColor } from "@/lib/palette";
 
-const featured = [...publications].sort((a, b) => b.citedBy - a.citedBy).slice(0, 3);
+const featured = publications.slice(0, 3);
 const publishedBook = books.find((b) => b.status === "published");
 
 export default function Home() {
@@ -18,8 +19,11 @@ export default function Home() {
       <section
         className="relative overflow-hidden"
         style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 80% 0%, var(--accent-soft) 0%, transparent 60%)",
+          background: [
+            `radial-gradient(ellipse 55% 45% at 85% -5%, ${hexToRgba(palette.teal, 0.16)} 0%, transparent 60%)`,
+            `radial-gradient(ellipse 45% 40% at 15% 15%, ${hexToRgba(palette.terracotta, 0.12)} 0%, transparent 60%)`,
+            `radial-gradient(ellipse 40% 45% at 60% 90%, ${hexToRgba(palette.indigo, 0.1)} 0%, transparent 60%)`,
+          ].join(", "),
         }}
       >
         <div className="mx-auto max-w-5xl px-6 pb-20 pt-16 sm:pt-24">
@@ -60,13 +64,13 @@ export default function Home() {
       <section className="border-y border-border bg-surface">
         <div className="mx-auto grid max-w-5xl grid-cols-2 px-6 py-10 sm:grid-cols-4">
           {[
-            { label: "Publications", value: totalPublications, suffix: "+" },
-            { label: "Citations", value: scholarMetrics.citations, suffix: "+", hint: scholarMetrics.source },
-            { label: "h-index", value: scholarMetrics.hIndex, hint: scholarMetrics.source },
-            { label: "Books", value: books.length },
+            { label: "Publications", value: totalPublications, suffix: "+", color: palette.teal },
+            { label: "Citations", value: scholarMetrics.citations, suffix: "+", hint: scholarMetrics.source, color: palette.terracotta },
+            { label: "h-index", value: scholarMetrics.hIndex, hint: scholarMetrics.source, color: palette.indigo },
+            { label: "Books", value: books.length, color: palette.plum },
           ].map((s, i) => (
             <div key={s.label} className={`px-4 py-2 text-center sm:text-left ${i > 0 ? "border-l border-border/70" : ""}`}>
-              <AnimatedStat value={s.value} suffix={s.suffix} label={s.label} hint={s.hint} />
+              <AnimatedStat value={s.value} suffix={s.suffix} label={s.label} hint={s.hint} color={s.color} />
             </div>
           ))}
         </div>
@@ -82,14 +86,28 @@ export default function Home() {
           />
         </Reveal>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {researchAreas.map((area, i) => (
-            <Reveal key={area.title} delay={i * 60}>
-              <div className="shadow-card hover:shadow-card-hover h-full rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-accent/40">
-                <h3 className="font-serif-display text-lg text-foreground">{area.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{area.description}</p>
-              </div>
-            </Reveal>
-          ))}
+          {researchAreas.map((area, i) => {
+            const color = palette[area.color as PaletteColor];
+            return (
+              <Reveal key={area.title} delay={i * 60}>
+                <div
+                  className="shadow-card hover:shadow-card-hover group h-full overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1"
+                  style={{ borderTopColor: color, borderTopWidth: 3 }}
+                >
+                  <div className="p-6">
+                    <div
+                      className="mb-4 flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold"
+                      style={{ background: hexToRgba(color, 0.14), color }}
+                    >
+                      {area.title.charAt(0)}
+                    </div>
+                    <h3 className="font-serif-display text-lg text-foreground">{area.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted">{area.description}</p>
+                  </div>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </section>
 
@@ -128,7 +146,10 @@ export default function Home() {
         </Reveal>
         {publishedBook && (
           <Reveal delay={100}>
-            <div className="shadow-card hover:shadow-card-hover mt-8 flex flex-col gap-6 rounded-2xl border border-border bg-card p-8 transition-all hover:-translate-y-1 sm:flex-row">
+            <div
+              className="shadow-card hover:shadow-card-hover mt-8 flex flex-col gap-6 rounded-2xl border border-border bg-card p-8 transition-all hover:-translate-y-1 sm:flex-row"
+              style={{ borderTopColor: palette.forest, borderTopWidth: 3 }}
+            >
               {publishedBook.cover && (
                 <a
                   href={publishedBook.link}

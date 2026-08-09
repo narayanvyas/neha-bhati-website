@@ -27,26 +27,32 @@ export const researchAreas = [
   {
     title: "Remote Sensing & GIS",
     description: "Satellite and SAR-based monitoring for agriculture, groundwater, and disaster management.",
+    color: "teal",
   },
   {
     title: "Artificial Intelligence & Machine Learning",
     description: "Deep learning, generative AI, and predictive modelling across environmental and healthcare domains.",
+    color: "indigo",
   },
   {
     title: "Internet of Things",
     description: "Sensor data management, edge intelligence, and blockchain-secured IoT systems.",
+    color: "terracotta",
   },
   {
     title: "Federated & Quantum Machine Learning",
     description: "Privacy-preserving distributed learning and fault tolerance in quantum ML architectures.",
+    color: "plum",
   },
   {
     title: "Healthcare Analytics",
     description: "ML-driven risk prediction, early diagnosis, and NLP-powered clinical assistance.",
+    color: "cobalt",
   },
   {
     title: "Digital Twins & Bioinformatics",
     description: "Real-time simulation frameworks and few-shot learning for bioinformatics applications.",
+    color: "forest",
   },
 ] as const;
 

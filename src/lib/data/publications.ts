@@ -302,5 +302,23 @@ export function doiUrl(doi: string) {
   return `https://doi.org/${doi}`;
 }
 
+function isRemoteSensing(pub: Publication) {
+  const text = `${pub.title} ${pub.sourceTitle}`;
+  return /remote sensing/i.test(text) || /\bSAR\b|synthetic aperture radar/i.test(text);
+}
+
+function priorityScore(pub: Publication) {
+  if (isRemoteSensing(pub) && pub.documentType === "Article") return 0;
+  if (isRemoteSensing(pub)) return 1;
+  return 2;
+}
+
+publications.sort((a, b) => {
+  const p = priorityScore(a) - priorityScore(b);
+  if (p !== 0) return p;
+  if (b.citedBy !== a.citedBy) return b.citedBy - a.citedBy;
+  return b.year - a.year;
+});
+
 export const totalCitations = publications.reduce((sum, p) => sum + p.citedBy, 0);
 export const totalPublications = publications.length;

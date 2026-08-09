@@ -1,6 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { palette, hexToRgba } from "@/lib/palette";
+
+const outerRingGradient = `conic-gradient(from 0deg, ${palette.teal}, ${palette.indigo}, ${palette.terracotta}, ${palette.plum}, ${palette.teal})`;
+const innerRingGradient = `conic-gradient(from 90deg, ${palette.cobalt}, ${palette.forest}, ${palette.terracotta}, ${palette.cobalt})`;
+const ringMask =
+  "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))";
 
 export function Monogram({ initials, className = "" }: { initials: string; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -27,41 +33,42 @@ export function Monogram({ initials, className = "" }: { initials: string; class
       className={`group relative aspect-square [perspective:800px] ${className}`}
     >
       {/* Ambient glow */}
-      <div className="animate-pulse-glow absolute inset-4 rounded-full" />
+      <div
+        className="animate-pulse-glow absolute inset-4 rounded-full"
+        style={{ background: hexToRgba(palette.teal, 0.08) }}
+      />
 
-      {/* Outer dashed ring, slow spin */}
-      <svg
-        viewBox="0 0 200 200"
-        className="animate-spin-slow absolute inset-0 h-full w-full text-accent/25"
-        aria-hidden
-      >
-        <circle
-          cx="100"
-          cy="100"
-          r="97"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1"
-          strokeDasharray="2 6"
+      {/* Outer multi-hue ring, slow spin */}
+      <div
+        className="animate-spin-slow absolute inset-0 rounded-full opacity-70"
+        style={{
+          background: outerRingGradient,
+          WebkitMask: ringMask,
+          mask: ringMask,
+        }}
+      />
+
+      {/* Inner multi-hue ring, counter-spin, carries the orbiting dot */}
+      <div className="animate-spin-slow-reverse absolute inset-3">
+        <div
+          className="absolute inset-0 rounded-full opacity-60"
+          style={{
+            background: innerRingGradient,
+            WebkitMask: ringMask,
+            mask: ringMask,
+          }}
         />
-      </svg>
-
-      {/* Inner ring, slow counter-spin, carries the orbiting dot */}
-      <svg
-        viewBox="0 0 200 200"
-        className="animate-spin-slow-reverse absolute inset-0 h-full w-full text-accent/30"
-        aria-hidden
-      >
-        <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeWidth="1" />
-        <circle cx="100" cy="20" r="3.5" fill="var(--gold)" />
-      </svg>
+        <span
+          className="absolute left-1/2 top-0 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/4 rounded-full shadow-card"
+          style={{ background: palette.terracotta }}
+        />
+      </div>
 
       {/* Tilting glass sphere */}
       <div
         className="shadow-card absolute inset-0 flex items-center justify-center rounded-full border border-border transition-transform duration-150 ease-out group-hover:shadow-card-hover"
         style={{
-          background:
-            "radial-gradient(circle at 32% 28%, var(--card) 0%, var(--accent-soft) 70%)",
+          background: `radial-gradient(circle at 32% 28%, var(--card) 0%, ${hexToRgba(palette.teal, 0.12)} 55%, ${hexToRgba(palette.indigo, 0.14)} 100%)`,
           transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         }}
       >

@@ -11,11 +11,13 @@ export function AnimatedStat({
   suffix = "",
   label,
   hint,
+  color,
 }: {
   value: number;
   suffix?: string;
   label: string;
   hint?: string;
+  color?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [display, setDisplay] = useState(0);
@@ -47,7 +49,7 @@ export function AnimatedStat({
 
   return (
     <div ref={ref}>
-      <p className="font-serif-display text-4xl text-accent tabular-nums">
+      <p className="font-serif-display text-4xl tabular-nums" style={{ color: color ?? "var(--accent)" }}>
         {display}
         {suffix}
       </p>
