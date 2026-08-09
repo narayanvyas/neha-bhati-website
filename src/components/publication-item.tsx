@@ -15,7 +15,7 @@ export function PublicationItem({ pub }: { pub: Publication }) {
   const isOpenAccess = pub.openAccess.length > 0;
 
   return (
-    <li className="group border-b border-border py-6 first:pt-0 last:border-b-0">
+    <li className="group -mx-6 border-b border-border px-6 py-6 transition-colors last:border-b-0 hover:bg-accent-soft/50">
       <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
         <a
           href={doiUrl(pub.doi)}

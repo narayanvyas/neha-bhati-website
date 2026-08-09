@@ -26,7 +26,7 @@ export default function ContactPage() {
       {profile.email && (
         <a
           href={`mailto:${profile.email}`}
-          className="group mt-10 flex flex-col rounded-2xl border border-accent/40 bg-surface p-6 transition-colors hover:border-accent"
+          className="shadow-card hover:shadow-card-hover group mt-10 flex flex-col rounded-2xl border border-accent/30 bg-card p-6 transition-all hover:-translate-y-1 hover:border-accent"
         >
           <span className="text-xs font-medium uppercase tracking-[0.2em] text-gold">Email</span>
           <span className="mt-1 font-serif-display text-xl text-foreground group-hover:text-accent">
@@ -42,7 +42,7 @@ export default function ContactPage() {
             href={link.href}
             target="_blank"
             rel="noreferrer"
-            className="group flex flex-col rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent/50"
+            className="shadow-card hover:shadow-card-hover group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-accent/40"
           >
             <span className="font-serif-display text-lg text-foreground group-hover:text-accent">
               {link.label}

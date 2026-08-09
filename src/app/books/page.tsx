@@ -20,9 +20,9 @@ export default function BooksPage() {
         {books.map((book, i) => (
           <div
             key={i}
-            className={`rounded-2xl border p-8 ${
+            className={`rounded-2xl border p-8 transition-all ${
               book.status === "published"
-                ? "border-border bg-surface"
+                ? "shadow-card hover:shadow-card-hover border-border bg-card hover:-translate-y-1"
                 : "border-dashed border-border/80"
             }`}
           >

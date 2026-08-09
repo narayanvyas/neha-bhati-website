@@ -10,9 +10,12 @@ export function SectionHeading({
   return (
     <div className="max-w-2xl">
       {eyebrow && (
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
-          {eyebrow}
-        </p>
+        <>
+          <div className="rule-gold mb-3" />
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+            {eyebrow}
+          </p>
+        </>
       )}
       <h2 className="mt-2 font-serif-display text-3xl text-foreground sm:text-4xl">
         {title}

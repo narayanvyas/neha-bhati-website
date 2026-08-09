@@ -12,51 +12,63 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="mx-auto max-w-5xl px-6 pb-20 pt-16 sm:pt-24">
-        <div className="grid items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
-              {profile.affiliation}
-            </p>
-            <h1 className="mt-3 font-serif-display text-4xl leading-[1.1] text-foreground sm:text-5xl">
-              {profile.name}
-            </h1>
-            <p className="mt-4 text-lg text-muted">{profile.headline}</p>
-            <p className="mt-6 max-w-xl leading-relaxed text-muted">{profile.bio}</p>
+      <section
+        className="relative overflow-hidden"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 80% 0%, var(--accent-soft) 0%, transparent 60%)",
+        }}
+      >
+        <div className="mx-auto max-w-5xl px-6 pb-20 pt-16 sm:pt-24">
+          <div className="grid items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
+            <div>
+              <div className="rule-gold mb-3" />
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+                {profile.affiliation}
+              </p>
+              <h1 className="mt-3 font-serif-display text-5xl leading-[1.08] text-foreground sm:text-6xl">
+                {profile.name}
+              </h1>
+              <p className="mt-4 text-lg text-muted">{profile.headline}</p>
+              <p className="mt-6 max-w-xl leading-relaxed text-muted">{profile.bio}</p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/publications"
-                className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
-              >
-                View Publications
-              </Link>
-              <Link
-                href="/contact"
-                className="rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-accent hover:text-accent"
-              >
-                Get in Touch
-              </Link>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/publications"
+                  className="shadow-card rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-transform hover:-translate-y-0.5 hover:shadow-card-hover"
+                >
+                  View Publications
+                </Link>
+                <Link
+                  href="/contact"
+                  className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-accent hover:text-accent"
+                >
+                  Get in Touch
+                </Link>
+              </div>
             </div>
-          </div>
 
-          <Monogram initials={profile.initials} className="mx-auto w-48 sm:w-56 md:w-full" />
+            <Monogram initials={profile.initials} className="mx-auto w-48 sm:w-56 md:w-full" />
+          </div>
         </div>
       </section>
 
       {/* Stats */}
       <section className="border-y border-border bg-surface">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 py-10 sm:grid-cols-4">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 px-6 py-10 sm:grid-cols-4">
           {[
             { label: "Publications", value: `${totalPublications}+` },
             { label: "Citations", value: `${scholarMetrics.citations}+`, hint: scholarMetrics.source },
             { label: "h-index", value: `${scholarMetrics.hIndex}`, hint: scholarMetrics.source },
             { label: "Books", value: `${books.length}` },
-          ].map((s) => (
-            <div key={s.label} className="text-center sm:text-left">
-              <p className="font-serif-display text-3xl text-foreground">{s.value}</p>
-              <p className="mt-1 text-sm text-muted">{s.label}</p>
-              {s.hint && <p className="text-xs text-muted/70">{s.hint}</p>}
+          ].map((s, i) => (
+            <div
+              key={s.label}
+              className={`px-4 py-2 text-center sm:text-left ${i > 0 ? "border-l border-border/70" : ""}`}
+            >
+              <p className="font-serif-display text-4xl text-accent">{s.value}</p>
+              <p className="mt-1 text-sm text-foreground">{s.label}</p>
+              {s.hint && <p className="text-xs text-muted">{s.hint}</p>}
             </div>
           ))}
         </div>
@@ -73,7 +85,7 @@ export default function Home() {
           {researchAreas.map((area) => (
             <div
               key={area.title}
-              className="rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent/50"
+              className="shadow-card hover:shadow-card-hover rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-accent/40"
             >
               <h3 className="font-serif-display text-lg text-foreground">{area.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">{area.description}</p>
@@ -91,11 +103,13 @@ export default function Home() {
               View all {totalPublications} publications &rarr;
             </Link>
           </div>
-          <ul className="mt-8">
-            {featured.map((pub) => (
-              <PublicationItem key={pub.doi} pub={pub} />
-            ))}
-          </ul>
+          <div className="shadow-card mt-8 rounded-2xl border border-border bg-card px-6">
+            <ul>
+              {featured.map((pub) => (
+                <PublicationItem key={pub.doi} pub={pub} />
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -108,7 +122,7 @@ export default function Home() {
           </Link>
         </div>
         {publishedBook && (
-          <div className="mt-8 rounded-2xl border border-border bg-surface p-8">
+          <div className="shadow-card mt-8 rounded-2xl border border-border bg-card p-8">
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
               Published &middot; {publishedBook.year}
             </p>
