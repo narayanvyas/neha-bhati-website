@@ -1,69 +1,138 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Monogram } from "@/components/monogram";
+import { SectionHeading } from "@/components/section-heading";
+import { PublicationItem } from "@/components/publication-item";
+import { profile, researchAreas, scholarMetrics, books } from "@/lib/data/profile";
+import { publications, totalPublications } from "@/lib/data/publications";
+
+const featured = [...publications].sort((a, b) => b.citedBy - a.citedBy).slice(0, 3);
+const publishedBook = books.find((b) => b.status === "published");
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div>
+      {/* Hero */}
+      <section className="mx-auto max-w-5xl px-6 pb-20 pt-16 sm:pt-24">
+        <div className="grid items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+              {profile.affiliation}
+            </p>
+            <h1 className="mt-3 font-serif-display text-4xl leading-[1.1] text-foreground sm:text-5xl">
+              {profile.name}
+            </h1>
+            <p className="mt-4 text-lg text-muted">{profile.headline}</p>
+            <p className="mt-6 max-w-xl leading-relaxed text-muted">{profile.bio}</p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/publications"
+                className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
+              >
+                View Publications
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-accent hover:text-accent"
+              >
+                Get in Touch
+              </Link>
+            </div>
+          </div>
+
+          <Monogram initials={profile.initials} className="mx-auto w-48 sm:w-56 md:w-full" />
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="border-y border-border bg-surface">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 py-10 sm:grid-cols-4">
+          {[
+            { label: "Publications", value: `${totalPublications}+` },
+            { label: "Citations", value: `${scholarMetrics.citations}+`, hint: scholarMetrics.source },
+            { label: "h-index", value: `${scholarMetrics.hIndex}`, hint: scholarMetrics.source },
+            { label: "Books", value: `${books.length}` },
+          ].map((s) => (
+            <div key={s.label} className="text-center sm:text-left">
+              <p className="font-serif-display text-3xl text-foreground">{s.value}</p>
+              <p className="mt-1 text-sm text-muted">{s.label}</p>
+              {s.hint && <p className="text-xs text-muted/70">{s.hint}</p>}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Research areas */}
+      <section className="mx-auto max-w-5xl px-6 py-20">
+        <SectionHeading
+          eyebrow="Focus"
+          title="Research Areas"
+          description="Interdisciplinary work spanning intelligent systems and their real-world applications."
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {researchAreas.map((area) => (
+            <div
+              key={area.title}
+              className="rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent/50"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
+              <h3 className="font-serif-display text-lg text-foreground">{area.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{area.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Featured publications */}
+      <section className="border-t border-border bg-surface">
+        <div className="mx-auto max-w-5xl px-6 py-20">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <SectionHeading eyebrow="Selected Work" title="Featured Publications" />
+            <Link href="/publications" className="text-sm text-accent hover:underline">
+              View all {totalPublications} publications &rarr;
+            </Link>
+          </div>
+          <ul className="mt-8">
+            {featured.map((pub) => (
+              <PublicationItem key={pub.doi} pub={pub} />
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Books teaser */}
+      <section className="mx-auto max-w-5xl px-6 py-20">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <SectionHeading eyebrow="Authorship" title="Books" />
+          <Link href="/books" className="text-sm text-accent hover:underline">
+            View all books &rarr;
+          </Link>
+        </div>
+        {publishedBook && (
+          <div className="mt-8 rounded-2xl border border-border bg-surface p-8">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+              Published &middot; {publishedBook.year}
+            </p>
+            <h3 className="mt-2 font-serif-display text-2xl text-foreground">{publishedBook.title}</h3>
+            <p className="mt-2 text-sm text-muted">{publishedBook.role}</p>
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{publishedBook.description}</p>
             <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href={publishedBook.link}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-block text-sm text-accent hover:underline"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+              View on Routledge &rarr;
+            </a>
+          </div>
+        )}
+        <p className="mt-6 text-sm text-muted">
+          Two additional books are currently under production.{" "}
+          <Link href="/books" className="text-accent hover:underline">
+            Learn more
+          </Link>
+          .
+        </p>
+      </section>
     </div>
   );
 }

@@ -1,0 +1,67 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { PublicationItem } from "@/components/publication-item";
+import type { DocumentType, Publication } from "@/lib/data/publications";
+
+const filters: { label: string; value: DocumentType | "All" }[] = [
+  { label: "All", value: "All" },
+  { label: "Articles", value: "Article" },
+  { label: "Book Chapters", value: "Book chapter" },
+  { label: "Conference Papers", value: "Conference paper" },
+  { label: "Books", value: "Book" },
+];
+
+export function PublicationsList({ publications }: { publications: Publication[] }) {
+  const [active, setActive] = useState<DocumentType | "All">("All");
+
+  const filtered = useMemo(
+    () => (active === "All" ? publications : publications.filter((p) => p.documentType === active)),
+    [active, publications]
+  );
+
+  const byYear = useMemo(() => {
+    const map = new Map<number, Publication[]>();
+    for (const pub of filtered) {
+      map.set(pub.year, [...(map.get(pub.year) ?? []), pub]);
+    }
+    return [...map.entries()].sort((a, b) => b[0] - a[0]);
+  }, [filtered]);
+
+  return (
+    <div>
+      <div className="flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <button
+            key={f.value}
+            type="button"
+            onClick={() => setActive(f.value)}
+            className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
+              active === f.value
+                ? "border-accent bg-accent text-accent-foreground"
+                : "border-border text-muted hover:border-accent/50 hover:text-accent"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-10 space-y-12">
+        {byYear.map(([year, pubs]) => (
+          <div key={year}>
+            <h2 className="font-serif-display text-2xl text-foreground">{year}</h2>
+            <ul className="mt-4">
+              {pubs.map((pub) => (
+                <PublicationItem key={pub.doi} pub={pub} />
+              ))}
+            </ul>
+          </div>
+        ))}
+        {byYear.length === 0 && (
+          <p className="text-muted">No publications in this category yet.</p>
+        )}
+      </div>
+    </div>
+  );
+}
